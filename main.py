@@ -15,12 +15,12 @@ def gen(camera):
 
 @app.route('/video_feed_1')
 def video_feed_1():
-    return Response(gen(VideoWrapper('video1.mp4')),
+    return Response(gen(VideoWrapper('assets/video1.mp4')),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed_2')
 def video_feed_2():
-    return Response(gen(VideoWrapper('video2.mp4')),
+    return Response(gen(VideoWrapper('assets/video2.mp4')),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
