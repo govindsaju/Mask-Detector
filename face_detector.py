@@ -2,13 +2,14 @@ import argparse
 import cv2
 from model import Trainer
 import numpy as np
+import time
 
 class FaceDetector:
 	def __init__(self):
 		self.prototxtpath = "deploy.prototxt.txt"
 		self.weightspath = "res10_300x300_ssd_iter_140000.caffemodel"
 		self.net = cv2.dnn.readNet(self.prototxtpath, self.weightspath)
-		self.min_confidence = 0.2
+		self.min_confidence = 0.25
 		self.model = Trainer()
 		self.model.load_model()
 
@@ -27,8 +28,8 @@ class FaceDetector:
 				face = image[startY:endY, startX:endX]
 				face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
 				label,accu = self.model.predict(face)
-				color = (0, 255, 0) if label == "with_mask" else (0, 0, 255)
-				if label=="with_mask":
+				color = (0, 255, 0) if label == "without_mask" else (0, 0, 255)
+				if label=="without_mask":
 					label = "YES"
 				else:
 					label = "NO"
@@ -43,9 +44,13 @@ class FaceDetector:
 if __name__=='__main__':
 	arg_parser = argparse.ArgumentParser()
 	arg_parser.add_argument('-i','--image',required=True,help='Path to image')
+	arg_parser.add_argument('-o','--output',required=True,help='Path to output image')
 	args = vars(arg_parser.parse_args())
 	image = cv2.imread(args["image"])
 	f = FaceDetector()
 	image = f.predict(image)
-	cv2.imshow("Output", image)
-	cv2.waitKey(0)
+	#cv2.imshow("Output", image)
+	#time.sleep(5)
+	#cv2.waitKey(0)
+	#cv2.destroyAllWindows()
+	cv2.imwrite(args['output'],image)

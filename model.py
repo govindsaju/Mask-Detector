@@ -6,7 +6,7 @@ import cv2
 import tensorflow as tf
 from datetime import datetime
 
-# Images of size 60x60, divided by 255
+# Images of size 40x40
 
 
 class Trainer:
@@ -18,7 +18,7 @@ class Trainer:
 		self.num_epochs = 5
 
 		self.model = tf.keras.Sequential([
-  tf.keras.layers.Rescaling(1./255,input_shape=(60,60,3)),
+  tf.keras.layers.Rescaling(1./255,input_shape=(40,40,3)),
   tf.keras.layers.Conv2D(32, 3, activation='relu'),
   tf.keras.layers.MaxPooling2D(),
   tf.keras.layers.Conv2D(32, 3, activation='relu'),
@@ -37,8 +37,8 @@ class Trainer:
 	def load_data(self):
 
 		self.loader = Loader()
-		self.train_data = tf.convert_to_tensor(self.loader.train_data/255.0)
-		self.test_data = tf.convert_to_tensor(self.loader.test_data/255.0)
+		self.train_data = tf.convert_to_tensor(self.loader.train_data)
+		self.test_data = tf.convert_to_tensor(self.loader.test_data)
 		l = []
 		t = []
 		for i in range(self.loader.train_labels.shape[0]):
@@ -74,8 +74,8 @@ class Trainer:
 		self.model.evaluate(self.test_data,self.test_labels)
 
 	def predict(self, image):
-		image = cv2.resize(image,(60,60))
-		image = image/255
+		image = cv2.resize(image,(40,40))
+		image = image
 		image = np.expand_dims(image,0)
 		prediction = 'None'
 		if not self.model:
@@ -84,7 +84,7 @@ class Trainer:
 		prediction = self.model.predict(image)
 		ind = np.argmax(prediction)
 		classes = ['without_mask','with_mask']
-		print(prediction)
+		#print(prediction)
 		return (classes[ind],prediction[0,ind])
 
 
@@ -101,7 +101,6 @@ if __name__ == '__main__':
 	t = Trainer()
 	if options.train:
 		t.load_data()
-		t.train()
 		t.train()
 		t.test()
 	if options.test:
@@ -126,5 +125,5 @@ if __name__ == '__main__':
 		image = t.loader.test_data[i]
 		image = cv2.resize(image, (0,0), fx=6, fy=6)
 		cv2.imshow('Face', image)
-		cv2.waitKey(0)
+		cv2.waitKey(10)
 		cv2.destroyAllWindows()

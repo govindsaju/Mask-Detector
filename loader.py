@@ -5,7 +5,7 @@ import os
 
 class Loader:
     def __init__(self):
-        self.img_dims = (60,60)
+        self.img_dims = (40,40)
         train_dir = 'data/'
         test_dir = 'test/'
         classes = ['with_mask','without_mask']
@@ -39,14 +39,14 @@ class Loader:
 
     def preview(self):
         indices = np.random.randint(0, self.test_data.shape[0], (4,4))
-        images = [ [ self.test_data[indices[i,j]] for j in range(4)] for i in range(4) ]
-        final = np.full((60 * 4 + 4 * 20, 60 * 4 + 3 * 5,3),255,np.uint8)
+        images = [ [ self.test_data[indices[i,j]].reshape(40,40,3) for j in range(4)] for i in range(4) ]
+        final = np.full((40 * 4 + 4 * 20, 40 * 4 + 3 * 5,3),255,np.uint8)
         for i in range(4):
             for j in range(4):
-                final[j*(60+20):j*(60+20)+60,i*(60+5):i*(60+5)+60] = images[i][j]
+                final[j*(40+20):j*(40+20)+40,i*(40+5):i*(40+5)+40] = images[i][j]
                 final = cv2.putText(final,
                     str('Yes' if self.test_labels[indices[i,j]]=='with_mask' else 'No'),
-                    (i*(60+5), (j+1)*(60+18)),
+                    (i*(40+5), (j+1)*(40+18)),
                     cv2.FONT_HERSHEY_COMPLEX,
                     0.5,
                     (0,0,0),
