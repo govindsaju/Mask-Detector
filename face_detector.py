@@ -2,14 +2,13 @@ import argparse
 import cv2
 from model import Trainer
 import numpy as np
-import time
 
 class FaceDetector:
 	def __init__(self):
 		self.prototxtpath = "deploy.prototxt.txt"
 		self.weightspath = "res10_300x300_ssd_iter_140000.caffemodel"
 		self.net = cv2.dnn.readNet(self.prototxtpath, self.weightspath)
-		self.min_confidence = 0.25
+		self.min_confidence = 0.50
 		self.model = Trainer()
 		self.model.load_model()
 
